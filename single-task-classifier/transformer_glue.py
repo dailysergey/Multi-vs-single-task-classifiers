@@ -5,6 +5,7 @@ import wandb
 import logging
 import torch
 import hydra
+import random
 from omegaconf import DictConfig, OmegaConf
 from hydra.utils import instantiate
 from datetime import datetime
@@ -16,7 +17,15 @@ from transformers import (AutoModelForSequenceClassification, AutoTokenizer, Dat
 
 ACCURACY = PRECISION = RECALL = F1 = None
 
-
+def seed_everything(seed):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = True
+    
 def get_args():
     '''Load args from config.yaml'''
     config = instantiate(OmegaConf.load("config.yaml"))
@@ -62,12 +71,11 @@ def log_metrics(metrics, filename, task, model, seed):
 
 @hydra.main(version_base=None, config_path=".", config_name="config")
 def main(cfg: DictConfig):
-    now = datetime.now()
-    date = now.strftime('%Y-%m-%d')
-    time = now.strftime("%H-%M-%S")
+    
     hydra_cfg = hydra.core.hydra_config.HydraConfig.get()
 
     args = get_args()
+    seed_everything(args.seed)
     logging.basicConfig(format='%(asctime)s - %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S',
                         level=logging.INFO)
@@ -112,7 +120,7 @@ def main(cfg: DictConfig):
             project=args.wandb_project,
             entity=args.wandb_entity,
             tags=[args.model, args.task],
-            name=f"{args.model}_{args.task}"
+            name=f"{args.model}_task_{args.task}_epochs_{args.epochs}_seed_{args.seed}"
         )
 
     callbacks = [EarlyStoppingCallback(early_stopping_patience=3)]
