@@ -1,4 +1,4 @@
-task: sst2
+task: mrpc #sst2 #cola
 model: "roberta-base"
 seed: 44
 epochs: 3
