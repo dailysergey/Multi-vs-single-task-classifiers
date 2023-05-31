@@ -1,0 +1,10 @@
+model: "bert-base-uncased"
+seed: 44
+epochs: 3
+device: "cuda:0"
+log_file: "train_GLUE_results.csv" # file to save metrucs
+use_wandb: true
+wandb_entity: "gusevski" # login | be sure that you have wandb login before start the script
+wandb_project: "Multi-vs-single-task-classifiers" # project name
+from_checkpoint:  # path to checkpoint
+tasks: [Task.CoLA, Task.SST_2, Task.MRPC] 
