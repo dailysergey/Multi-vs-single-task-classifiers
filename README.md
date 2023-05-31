@@ -37,4 +37,4 @@ learn more complex features.
  * * joint training описывают для задач классификации
 - [ACL 2019 BAM! Born-Again Multi-Task Networks for Natural Language Understanding](https://paperswithcode.com/paper/bam-born-again-multi-task-networks-for)
 - [ACL 2019 Multi-Task Deep Neural Networks for Natural Language Understanding](https://paperswithcode.com/paper/multi-task-deep-neural-networks-for-natural)
-Много реализаций ))
+Возьмем за основу реализацию данной статьи из [репо](https://github.com/ABaldrati/MT-BERT)
