@@ -470,7 +470,7 @@ def main(cfg: DictConfig):
 
 
             models_path = os.path.join(hydra_cfg['runtime']['output_dir'], "saved_models")
-            models_path.mkdir(exist_ok=True)
+            
             torch.save({
                 'epoch': epoch,
                 'model_state_dict': model.state_dict(),
