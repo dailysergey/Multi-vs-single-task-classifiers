@@ -1,5 +1,7 @@
 # Multi-vs-single-task-classifiers
 
+Проект можно посмотреть на [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers?workspace=user-gusevski)
+
 Install `pip install -r requirements.txt -q`
 
 # Single task classifier 
@@ -7,7 +9,7 @@ Install `pip install -r requirements.txt -q`
 
 `python transformer_glue.py`
 
-Проект можно посмотреть на [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers?workspace=user-gusevski)
+
 
 На основе Config можно настроить следующие параметры:
 - выбрать одну из предложенных задач "sst2", "mrpc", "cola"
