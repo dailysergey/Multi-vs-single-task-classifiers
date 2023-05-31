@@ -387,18 +387,18 @@ def train_minibatch(input_data, task, label, model, task_criterion, **kwargs):
 def main(cfg: DictConfig):
 
     hydra_cfg = hydra.core.hydra_config.HydraConfig.get()
-
-    seed_everything(args.seed)
+    args = cfg
+    seed_everything(args.TRAINING_ARGS.seed)
     NUM_EPOCHS = args.epochs
 
     datasets_config = define_dataset_config()
     tasks_config = define_tasks_config(datasets_config)
 
     task_actions = []
-    for task in iter(Task):
-        if task in args.tasks:
-            train_loader = tasks_config[task]["train_loader"]
-            task_actions.extend([task] * len(train_loader))
+    for task in args.tasks:
+        task = getattr(Task, task)
+        train_loader = tasks_config[task]["train_loader"]
+        task_actions.extend([task] * len(train_loader))
 
     # Create wandb run if needed
     if args.use_wandb:
@@ -406,7 +406,7 @@ def main(cfg: DictConfig):
             project=args.wandb_project,
             entity=args.wandb_entity,
             tags=[args.model, args.task],
-            name=f"{args.model}_task_{args.task}_epochs_{args.epochs}_seed_{args.seed}"
+            name=f"{args.model}_task_{args.task}_epochs_{args.epochs}_seed_{args.TRAINING_ARGS.seed}"
         )
     model = MultiTask_BERT()
     model.to(device)
@@ -483,12 +483,12 @@ def main(cfg: DictConfig):
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'training_start': training_start
-            }, os.path.join(hydra_cfg['runtime']['output_dir'], f'multitask_bert_base_seed_{args.seed}_epoch_{epoch}.tar'))
+            }, os.path.join(hydra_cfg['runtime']['output_dir'], f'multitask_bert_base_seed_{args.TRAINING_ARGS.seed}_epoch_{epoch}.tar'))
 
             model.eval()
             val_results = {}
             with torch.no_grad():
-                task_bar = tqdm([task for task in Task if task in args.tasks],
+                task_bar = tqdm([getattr(Task, task) for task in args.tasks],
                                 file=orig_stdout)
                 for task in task_bar:
                     task_bar.set_description(task.name)
@@ -527,14 +527,14 @@ def main(cfg: DictConfig):
                         if type(metric_result) == tuple or type(metric_result) == stats.spearmanr:
                             metric_result = metric_result[0]
                         val_results[task.name, metric.__name__] = metric_result
-
+                        if args.use_wandb:
+                            wandb.log({"task_name": task.name, metric.__name__: metric_result})
                         logging.info(
                             f"val_results[{task.name}, {metric.__name__}] = {val_results[task.name, metric.__name__]}")
             data_frame = pd.DataFrame(
                 data=val_results,
                 index=[epoch])
-            if args.use_wandb:
-                wandb.log(val_results)
+            
                 
             data_frame.to_csv(
                 os.path.join(hydra_cfg['runtime']['output_dir'], f"{args.log_file}"), mode='a', index_label='Epoch')

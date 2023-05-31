@@ -1,5 +1,7 @@
 # Multi-vs-single-task-classifiers
 
+Обучить классификатор в режиме Multi-task Learning любым методом на следующих задачах GLUE - Cola, SST-2, MRPC. Сравнить с наивным подходом к обучению на все задачи сразу и с отдельной моделью под каждую из задач.
+
 Проект можно посмотреть на [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers?workspace=user-gusevski)
 
 Install `pip install -r requirements.txt -q`
@@ -40,7 +42,7 @@ learn more complex features.
 - [ACL 2019 BAM! Born-Again Multi-Task Networks for Natural Language Understanding](https://paperswithcode.com/paper/bam-born-again-multi-task-networks-for)
 - [ACL 2019 Multi-Task Deep Neural Networks for Natural Language Understanding](https://paperswithcode.com/paper/multi-task-deep-neural-networks-for-natural)
 
-Возьмем за основу реализацию данной статьи из [репо](https://github.com/ABaldrati/MT-BERT)
+* * Воспроизведем реализацию из [репо](https://github.com/ABaldrati/MT-BERT), актуализировав версии Transformers и дополним мониторингом
 
 
 Запуск с использованием конфига yaml с помощью hydra:

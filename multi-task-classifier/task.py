@@ -41,8 +41,8 @@ class TaskConfig:
 
 def define_dataset_config():
     datasets_config = {
-        Task.CoLA: TaskConfig(("glue", "cola"), ["label", "sentence"], batch_size=32, metrics=[accuracy_score]),
-        Task.SST_2: TaskConfig(("glue", "sst2"), ["label", "sentence"], batch_size=32, metrics=[accuracy_score]),
+        Task.CoLA: TaskConfig(("glue", "cola"), ["label", "sentence"], batch_size=32, metrics=[accuracy_score, f1_score]),
+        Task.SST_2: TaskConfig(("glue", "sst2"), ["label", "sentence"], batch_size=32, metrics=[accuracy_score, f1_score]),
         Task.MRPC: TaskConfig(("glue", "mrpc"), ["label", "sentence1", "sentence2"], batch_size=32,metrics=[accuracy_score, f1_score]),
         # Task.STS_B: TaskConfig(("glue", "stsb"), ["label", "sentence1", "sentence2"], batch_size=32,
         #                        metrics=[pearsonr, spearmanr]),
