@@ -388,7 +388,7 @@ def main(cfg: DictConfig):
 
     hydra_cfg = hydra.core.hydra_config.HydraConfig.get()
     args = cfg
-    seed_everything(args.TRAINING_ARGS.seed)
+    seed_everything(args.seed)
     NUM_EPOCHS = args.epochs
 
     datasets_config = define_dataset_config()
@@ -406,7 +406,7 @@ def main(cfg: DictConfig):
             project=args.wandb_project,
             entity=args.wandb_entity,
             tags=[args.model, args.task],
-            name=f"{args.model}_task_{args.task}_epochs_{args.epochs}_seed_{args.TRAINING_ARGS.seed}"
+            name=f"{args.model}_task_{args.task}_epochs_{args.epochs}_seed_{args.seed}"
         )
     model = MultiTask_BERT()
     model.to(device)
@@ -483,7 +483,7 @@ def main(cfg: DictConfig):
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'training_start': training_start
-            }, os.path.join(hydra_cfg['runtime']['output_dir'], f'multitask_bert_base_seed_{args.TRAINING_ARGS.seed}_epoch_{epoch}.tar'))
+            }, os.path.join(hydra_cfg['runtime']['output_dir'], f'multitask_bert_base_seed_{args.seed}_epoch_{epoch}.tar'))
 
             model.eval()
             val_results = {}
