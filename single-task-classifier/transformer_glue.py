@@ -74,12 +74,13 @@ def main(cfg: DictConfig):
     
     hydra_cfg = hydra.core.hydra_config.HydraConfig.get()
 
-    args = get_args()
-    seed_everything(args.seed)
+    args = cfg
+    
     logging.basicConfig(format='%(asctime)s - %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S',
                         level=logging.INFO)
-    
+    logging.info(OmegaConf.to_yaml(args))
+    seed_everything(args.TRAINING_ARGS.seed)
     logging.info(
         f"Current hydra folder:{hydra_cfg['runtime']['output_dir']}")
 
@@ -110,8 +111,8 @@ def main(cfg: DictConfig):
 
     # Fix training settings
     settings = args.TRAINING_ARGS.copy()
-    settings["num_train_epochs"] = args.epochs
-    settings["seed"] = args.seed
+    # settings["num_train_epochs"] = args.epochs
+    # settings["seed"] = args.TRAINING_ARGS.seed
     settings['output_dir'] = hydra_cfg['runtime']['output_dir']
 
     # Create wandb run if needed
@@ -120,7 +121,7 @@ def main(cfg: DictConfig):
             project=args.wandb_project,
             entity=args.wandb_entity,
             tags=[args.model, args.task],
-            name=f"{args.model}_task_{args.task}_epochs_{args.epochs}_seed_{args.seed}"
+            name=f"{args.model}_task_{args.task}_epochs_{args.epochs}_seed_{args.TRAINING_ARGS.seed}"
         )
 
     callbacks = [EarlyStoppingCallback(early_stopping_patience=3)]
@@ -145,7 +146,7 @@ def main(cfg: DictConfig):
     final_metrics.update(trainer.evaluate(
         tokenized["validation"], metric_key_prefix="test"))
     log_metrics(final_metrics, args.log_file,
-                args.task, args.model, args.seed)
+                args.task, args.model, args.TRAINING_ARGS.seed)
     if args.use_wandb:
         wandb.log(final_metrics)
         run.finish()

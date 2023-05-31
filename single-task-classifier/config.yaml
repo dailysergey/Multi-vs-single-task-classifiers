@@ -1,6 +1,5 @@
 task: mrpc #sst2 #cola
 model: "roberta-base"
-seed: 44
 epochs: 3
 device: "cuda:0"
 log_file: "results.csv"
@@ -20,3 +19,5 @@ TRAINING_ARGS:
   logging_steps: 20
   output_dir: "./outputs/" # write checkpoints in hydra output folder
   load_best_model_at_end: True
+  num_train_epochs: 3
+  seed: 44
