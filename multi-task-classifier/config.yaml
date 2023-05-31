@@ -1,4 +1,4 @@
-model: "bert-base-uncased"
+model: "multitask-bert-base-uncased"
 seed: 44
 epochs: 3
 device: "cuda:0"
@@ -8,3 +8,4 @@ wandb_entity: "gusevski" # login | be sure that you have wandb login before star
 wandb_project: "Multi-vs-single-task-classifiers" # project name
 from_checkpoint:  # path to checkpoint
 tasks: [Task.CoLA, Task.SST_2, Task.MRPC] 
+task: "CoLA_SST_2_MRPC"

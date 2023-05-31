@@ -535,12 +535,13 @@ def main(cfg: DictConfig):
                 index=[epoch])
             if args.use_wandb:
                 wandb.log(val_results)
-                run.finish()
+                
             data_frame.to_csv(
                 os.path.join(hydra_cfg['runtime']['output_dir'], f"{args.log_file}"), mode='a', index_label='Epoch')
-            save_config(OmegaConf.to_container(args, resolve=True),
-                        args.TRAINING_ARGS.output_dir)
+    save_config(OmegaConf.to_container(args, resolve=True),
+                hydra_cfg['runtime']['output_dir'])
 
-
+    if args.use_wandb:
+        run.finish()
 if __name__ == '__main__':
     main()
