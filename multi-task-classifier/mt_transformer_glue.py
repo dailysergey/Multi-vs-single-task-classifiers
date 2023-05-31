@@ -30,10 +30,12 @@ from torch.nn import BCELoss, MSELoss, CrossEntropyLoss
 # transformers
 from transformers import BertTokenizer, BertModel
 
-# hydra
+
+# tracking
 import hydra
 from omegaconf import DictConfig, OmegaConf
 from hydra.utils import instantiate
+import wandb
 
 # utils
 from task import Task, define_dataset_config, define_tasks_config
@@ -398,6 +400,14 @@ def main(cfg: DictConfig):
             train_loader = tasks_config[task]["train_loader"]
             task_actions.extend([task] * len(train_loader))
 
+    # Create wandb run if needed
+    if args.use_wandb:
+        run = wandb.init(
+            project=args.wandb_project,
+            entity=args.wandb_entity,
+            tags=[args.model, args.task],
+            name=f"{args.model}_task_{args.task}_epochs_{args.epochs}_seed_{args.seed}"
+        )
     model = MultiTask_BERT()
     model.to(device)
     optimizer = optim.Adamax(model.parameters(), lr=5e-5)
@@ -468,15 +478,12 @@ def main(cfg: DictConfig):
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1)
                 optimizer.step()
 
-
-            models_path = os.path.join(hydra_cfg['runtime']['output_dir'], "saved_models")
-            
             torch.save({
                 'epoch': epoch,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'training_start': training_start
-            }, os.path.join(models_path, f'bert_base_seed_{args.seed}_epoch_{epoch}.tar'))
+            }, os.path.join(hydra_cfg['runtime']['output_dir'], f'multitask_bert_base_seed_{args.seed}_epoch_{epoch}.tar'))
 
             model.eval()
             val_results = {}
@@ -520,13 +527,17 @@ def main(cfg: DictConfig):
                         if type(metric_result) == tuple or type(metric_result) == stats.spearmanr:
                             metric_result = metric_result[0]
                         val_results[task.name, metric.__name__] = metric_result
+
                         logging.info(
                             f"val_results[{task.name}, {metric.__name__}] = {val_results[task.name, metric.__name__]}")
             data_frame = pd.DataFrame(
                 data=val_results,
                 index=[epoch])
+            if args.use_wandb:
+                wandb.log(val_results)
+                run.finish()
             data_frame.to_csv(
-                os.path.join(hydra_cfg['runtime']['output_dir'] / f"{args.log_file}"), mode='a', index_label='Epoch')
+                os.path.join(hydra_cfg['runtime']['output_dir'], f"{args.log_file}"), mode='a', index_label='Epoch')
             save_config(OmegaConf.to_container(args, resolve=True),
                         args.TRAINING_ARGS.output_dir)
 
