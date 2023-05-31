@@ -1,15 +1,19 @@
+# classic
 import os
 import numpy as np
 import pandas as pd
-import wandb
 import logging
-import torch
-import hydra
 import random
+
+import torch
+
+# tracking
+import hydra
+import wandb
 from omegaconf import DictConfig, OmegaConf
 from hydra.utils import instantiate
-from datetime import datetime
-from argparse import ArgumentParser
+
+# transformers
 from datasets import load_dataset, load_metric
 from transformers import (AutoModelForSequenceClassification, AutoTokenizer, DataCollatorWithPadding,
                           Trainer, TrainingArguments, EarlyStoppingCallback)
@@ -111,8 +115,6 @@ def main(cfg: DictConfig):
 
     # Fix training settings
     settings = args.TRAINING_ARGS.copy()
-    # settings["num_train_epochs"] = args.epochs
-    # settings["seed"] = args.TRAINING_ARGS.seed
     settings['output_dir'] = hydra_cfg['runtime']['output_dir']
 
     # Create wandb run if needed
@@ -121,7 +123,7 @@ def main(cfg: DictConfig):
             project=args.wandb_project,
             entity=args.wandb_entity,
             tags=[args.model, args.task],
-            name=f"{args.model}_task_{args.task}_epochs_{args.epochs}_seed_{args.TRAINING_ARGS.seed}"
+            name=f"{args.model}_task_{args.task}_epochs_{args.TRAINING_ARGS.num_train_epochs}_seed_{args.TRAINING_ARGS.seed}"
         )
 
     callbacks = [EarlyStoppingCallback(early_stopping_patience=3)]

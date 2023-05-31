@@ -11,6 +11,9 @@ Install `pip install -r requirements.txt -q`
 
 `python transformer_glue.py`
 
+Пример запуска с hydra config:
+
+`python transformer_glue.py model="bert-base-uncased" device="cuda:1" TRAINING_ARGS.num_train_epochs=4 TRAINING_ARGS.seed=41`
 
 
 На основе Config можно настроить следующие параметры:
