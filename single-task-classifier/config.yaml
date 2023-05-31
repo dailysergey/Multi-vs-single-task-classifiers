@@ -5,8 +5,8 @@ epochs: 3
 device: "cuda:0"
 log_file: "results.csv"
 use_wandb: true
-wandb_entity: "gusevski"
-wandb_project: "Multi-vs-single-task-classifiers"
+wandb_entity: "gusevski" # login | be sure that you have wandb login before start the script
+wandb_project: "Multi-vs-single-task-classifiers" # project name
 
 TRAINING_ARGS:
   per_device_train_batch_size: 32
@@ -18,5 +18,5 @@ TRAINING_ARGS:
   save_strategy: "epoch"
   save_total_limit: 3
   logging_steps: 20
-  output_dir: "./outputs/" #"./results/"
+  output_dir: "./outputs/" # write checkpoints in hydra output folder
   load_best_model_at_end: True
