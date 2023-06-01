@@ -61,3 +61,4 @@ urllib3==1.26.16
 wandb==0.15.3
 xxhash==3.2.0
 yarl==1.9.2
+pytorch-warmup==0.0.4
