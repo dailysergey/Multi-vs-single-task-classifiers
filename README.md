@@ -4,7 +4,7 @@
 
 Проведенные эксперименты можно посмотреть на [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers?workspace=user-gusevski).
 
-Хорошая практика состоит в том, чтобы разделять модель и все функции в папках "model" и "utils". Однако в этом репозитории я организовал код логически в разных папках для удобства запуска из одного файла.
+Хорошая практика состоит в том, чтобы разделять модель и все функции в отдельных файлах "model" и "utils". Однако в этом репозитории я организовал код логически в разных папках для удобства запуска из одного файла.
 
 Install `pip install -r requirements.txt -q`
 
@@ -37,9 +37,18 @@ Install `pip install -r requirements.txt -q`
 |**roberta-base**|82\.74|88\.48|93\.27|
 |**bert-base-uncased**|81\.14|84\.31|92\.31|
 
+**bert-base-uncased** cola accuracy std = 0.004775
+**bert-base-uncased** sst2 accuracy std = 0.00341
+**bert-base-uncased** mrpc accuracy std = 0.01215
+
+**bert-base-uncased** cola f1 std = 0.00310
+**bert-base-uncased** sst2 f1 std = 0.00302
+**bert-base-uncased** mrpc f1 std = 0.0065
+
+
 # Multi task classifier
 
-Пойдем на paper with code и посмотрим, что пишут про Multi Task Learning, какие подходы:
+Пойдем на [paper with code](https://paperswithcode.com/) и посмотрим, что пишут про Multi Task Learning, какие подходы:
 - [7 Apr 2022, A Survey of Multi-task Learning in Natural Language Processing: Regarding Task Relatedness and Training Methods](https://paperswithcode.com/paper/a-survey-of-multi-task-learning-in-natural) 
  * * MTL enables shared representations to include features from all tasks, thus
 improving the consistency of task-specific decoding in each sub-task. Furthermore, the co-existence
@@ -62,13 +71,16 @@ learn more complex features.
 `python mt_transformer_glue.py seed=40 epochs=3`
 
 
-Таблица ниже показывает достгнутое accuracy f1-score на тестовой выборке в процентах, усреднённое по трём запускам c разными seed-ами. Метрики удобно смотреть с помощью табличного вида [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers/table?workspace=user-gusevski)
+Таблица ниже показывает достгнутое accuracy на тестовой выборке в процентах, усреднённое по трём запускам c разными seed-ами. Метрики удобно смотреть с помощью табличного вида [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers/table?workspace=user-gusevski)
 
 
-|model|cola_mrpc_sst2 accuracy|cola_mrpc_sst2 f1-score|
-|---|---|---|
-|**mutlitask-bert-base-uncased**|82\.75|88\.37|
+|model|cola|mrpc|sst2|
+|---|---|---|---|
+|**mutlitask-bert-base-uncased**|82\.93|81\.05|92\.28
 
+accuracy cola std = 0.0044
+accuracy mrpc std = 0.0133
+accuracy sst2 std = 0.0062
 
 # Выводы
 
