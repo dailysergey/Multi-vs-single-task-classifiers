@@ -4,7 +4,7 @@
 
 Проведенные эксперименты можно посмотреть на [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers?workspace=user-gusevski).
 
-Хорошая практика разносить модель в model и все функции в utils, но я решил разложить логически по папочкам и для запуска из одного файла.
+Хорошая практика состоит в том, чтобы разделять модель и все функции в папках "model" и "utils". Однако в этом репозитории я организовал код логически в разных папках для удобства запуска из одного файла.
 
 Install `pip install -r requirements.txt -q`
 
@@ -19,7 +19,7 @@ Install `pip install -r requirements.txt -q`
 `python transformer_glue.py model="bert-base-uncased" device="cuda:1" TRAINING_ARGS.num_train_epochs=4 TRAINING_ARGS.seed=41`
 
 
-На основе Config можно настроить следующие параметры:
+На основе Config можно настроить следующие гиперпараметры:
 - выбрать одну из предложенных задач "sst2", "mrpc", "cola"
 - выбрать модель
 - зафиксировать seed
@@ -28,9 +28,9 @@ Install `pip install -r requirements.txt -q`
 - log_file - csv с метриками
 - логировать в w&b
 
-На выходе 2 папке с логами wandb и outputs, куда сохраняется лог hydra и чекпоинты моделей
+Результаты будут сохраняться в двух папких: wandb и outputs, которые содержат логи w&b и hydra соответственно, а также чекпоинты моделей.
 
-Таблица ниже показывает полученное accuracy на тестовой выборке в процентах, усреднённое по трём запускам c разными seed-ами.
+Таблица ниже показывает достигнутую точность, усредненную по трем запускам с разными seed-ами на тестовой выборке в процентах.
 
 |model|cola|mrpc|sst2|
 |---|---|---|---|
@@ -62,7 +62,7 @@ learn more complex features.
 `python mt_transformer_glue.py seed=40 epochs=3`
 
 
-Таблица ниже показывает полученное accuracy f1 score на тестовой выборке в процентах, усреднённое по трём запускам c разными seed-ами. Метрики удобно смотреть с помощью табличного вида [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers/table?workspace=user-gusevski)
+Таблица ниже показывает достгнутое accuracy f1-score на тестовой выборке в процентах, усреднённое по трём запускам c разными seed-ами. Метрики удобно смотреть с помощью табличного вида [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers/table?workspace=user-gusevski)
 
 
 |model|cola_mrpc_sst2 accuracy|cola_mrpc_sst2 f1-score|
