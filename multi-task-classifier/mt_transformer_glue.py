@@ -4,9 +4,7 @@ import datetime
 import gc
 import math
 import operator
-from argparse import ArgumentParser
 from functools import wraps
-from pathlib import Path
 import random
 from random import sample
 import contextlib
@@ -26,10 +24,10 @@ from torch import nn
 from torch import optim
 import torch.nn.functional as F
 from torch.nn import BCELoss, MSELoss, CrossEntropyLoss
+import pytorch_warmup as warmup
 
 # transformers
 from transformers import BertTokenizer, BertModel
-
 
 # tracking
 import hydra
@@ -196,7 +194,9 @@ class MultiTask_BERT(nn.Module):
         k_steps = self.bert.config.num_hidden_layers
 
         # Single-Sentence Classification modules
+        # Why dropout_prob=0.05 for CoLa as in https://arxiv.org/pdf/1901.11504.pdf 4.2 Implementation details
         self.CoLa = SSCModule(self.hidden_size, dropout_prob=0.05)
+        
         self.SST_2 = SSCModule(self.hidden_size)
 
         # Pairwise Text Similarity module
@@ -213,10 +213,6 @@ class MultiTask_BERT(nn.Module):
                              output_classes=Task.QQP.num_classes())
         self.MRPC = PTCModule(self.hidden_size, k_steps,
                               output_classes=Task.MRPC.num_classes())
-        self.SNLI = SSCModule(
-            self.hidden_size, output_classes=Task.SNLI.num_classes())
-        self.SciTail = SSCModule(
-            self.hidden_size, output_classes=Task.SciTail.num_classes())
 
         # Pairwise Ranking
         self.QNLI = PRModule(self.hidden_size)
@@ -399,6 +395,7 @@ def main(cfg: DictConfig):
         task = getattr(Task, task)
         train_loader = tasks_config[task]["train_loader"]
         task_actions.extend([task] * len(train_loader))
+    epoch_steps = len(task_actions)
 
     # Create wandb run if needed
     if args.use_wandb:
@@ -410,8 +407,8 @@ def main(cfg: DictConfig):
         )
     model = MultiTask_BERT()
     model.to(device)
+    # Why Adamax as in https://arxiv.org/pdf/1901.11504.pdf 4.2 Implementation details
     optimizer = optim.Adamax(model.parameters(), lr=5e-5)
-    initial_epoch = 1
     training_start = datetime.datetime.now().isoformat()
 
     if args.from_checkpoint:
@@ -419,12 +416,15 @@ def main(cfg: DictConfig):
         checkpoint = torch.load(args.from_checkpoint, map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        initial_epoch = checkpoint['epoch'] + 1
         training_start = checkpoint["training_start"]
-
+        warmup_scheduler = None
+        lr_scheduler = None
     else:
         logging.info("Starting training from scratch")
-
+        lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
+            optimizer, lr_lambda=lambda step: 1.0)
+        warmup_scheduler = warmup.LinearWarmup(
+            optimizer, warmup_period=(epoch_steps * NUM_EPOCHS) // 10)
     logging.info(
         f"------------------ training-start:  {training_start} --------------------------)")
 
@@ -433,7 +433,7 @@ def main(cfg: DictConfig):
     for name, loss in losses.items():
         losses[name].to(device)
 
-    for epoch in range(initial_epoch, NUM_EPOCHS + 1):
+    for epoch in range(1, NUM_EPOCHS + 1):
         with stream_redirect_tqdm() as orig_stdout:
             epoch_bar = tqdm(
                 sample(task_actions, len(task_actions)), file=orig_stdout)
@@ -477,7 +477,9 @@ def main(cfg: DictConfig):
 
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1)
                 optimizer.step()
-
+                if warmup_scheduler:
+                    lr_scheduler.step()
+                    warmup_scheduler.dampen()
             torch.save({
                 'epoch': epoch,
                 'model_state_dict': model.state_dict(),
@@ -528,14 +530,13 @@ def main(cfg: DictConfig):
                             metric_result = metric_result[0]
                         val_results[task.name, metric.__name__] = metric_result
                         if args.use_wandb:
-                            wandb.log({"task_name": task.name, metric.__name__: metric_result})
+                            wandb.log({f"{task.name}_{metric.__name__}": metric_result})
                         logging.info(
                             f"val_results[{task.name}, {metric.__name__}] = {val_results[task.name, metric.__name__]}")
             data_frame = pd.DataFrame(
                 data=val_results,
                 index=[epoch])
-            
-                
+
             data_frame.to_csv(
                 os.path.join(hydra_cfg['runtime']['output_dir'], f"{args.log_file}"), mode='a', index_label='Epoch')
     save_config(OmegaConf.to_container(args, resolve=True),
@@ -543,5 +544,7 @@ def main(cfg: DictConfig):
 
     if args.use_wandb:
         run.finish()
+
+
 if __name__ == '__main__':
     main()
