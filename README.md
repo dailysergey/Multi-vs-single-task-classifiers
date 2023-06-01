@@ -1,4 +1,4 @@
-# Multi-vs-single-task-classifiers
+# Multi-vs-single-task-classifiers GLUE - Cola, SST-2, MRPC
 
 Обучить классификатор в режиме Multi-task Learning любым методом на следующих задачах GLUE - Cola, SST-2, MRPC. Сравнить с наивным подходом к обучению на все задачи сразу и с отдельной моделью под каждую из задач.
 
@@ -58,7 +58,7 @@ learn more complex features.
 `python mt_transformer_glue.py seed=40 epochs=3`
 
 
-Таблица ниже показывает полученное accuracy на тестовой выборке в процентах, усреднённое по трём запускам c разными seed-ами.
+Таблица ниже показывает полученное accuracy f1 score на тестовой выборке в процентах, усреднённое по трём запускам c разными seed-ами. Метрики удобно смотреть с помощью табличного вида [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers/table?workspace=user-gusevski)
 
 
 |model|cola_mrpc_sst2 accuracy|cola_mrpc_sst2 f1-score|
