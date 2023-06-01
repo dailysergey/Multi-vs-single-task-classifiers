@@ -407,8 +407,8 @@ def main(cfg: DictConfig):
         )
     model = MultiTask_BERT()
     model.to(device)
-    # Why Adamax as in https://arxiv.org/pdf/1901.11504.pdf 4.2 Implementation details
-    optimizer = optim.Adamax(model.parameters(), lr=5e-5)
+    # Adamax, lr as is in https://arxiv.org/pdf/1901.11504.pdf 4.2 Implementation details
+    optimizer = optim.Adamax(model.parameters(), lr=args.optimizer_lr)
     training_start = datetime.datetime.now().isoformat()
 
     if args.from_checkpoint:

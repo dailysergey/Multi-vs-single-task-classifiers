@@ -9,3 +9,4 @@ wandb_project: "Multi-vs-single-task-classifiers" # project name
 from_checkpoint:  # path to checkpoint
 tasks: [CoLA, SST_2, MRPC]
 task: "CoLA_SST_2_MRPC"
+optimizer_lr: 5e-5
