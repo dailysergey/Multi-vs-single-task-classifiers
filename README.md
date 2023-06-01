@@ -1,8 +1,10 @@
 # Multi-vs-single-task-classifiers GLUE - Cola, SST-2, MRPC
 
-Обучить классификатор в режиме Multi-task Learning любым методом на следующих задачах GLUE - Cola, SST-2, MRPC. Сравнить с наивным подходом к обучению на все задачи сразу и с отдельной моделью под каждую из задач.
+Обучить классификатор в режиме Multi-task Learning любым методом на следующих задачах GLUE - Cola, SST-2, MRPC
 
-Проект можно посмотреть на [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers?workspace=user-gusevski)
+Проведенные эксперименты можно посмотреть на [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers?workspace=user-gusevski).
+
+Хорошая практика разносить модель в model и все функции в utils, но я решил разложить логически по папочкам и для запуска из одного файла.
 
 Install `pip install -r requirements.txt -q`
 
@@ -47,7 +49,9 @@ learn more complex features.
 - [ACL 2019 BAM! Born-Again Multi-Task Networks for Natural Language Understanding](https://paperswithcode.com/paper/bam-born-again-multi-task-networks-for)
 - [ACL 2019 Multi-Task Deep Neural Networks for Natural Language Understanding](https://paperswithcode.com/paper/multi-task-deep-neural-networks-for-natural)
 
-* * Адатируем реализацию [MT_BERT](https://github.com/ABaldrati/MT-BERT), актуализировав библиотеки,дополним hydra, w&b, сохраним checkpoint-ы
+ 
+Адаптируем реализацию [MT_BERT](https://github.com/ABaldrati/MT-BERT), актуализировав библиотеки, дополним hydra, w&b, сохраним checkpoint-ы.
+В [MT_BERT](https://github.com/ABaldrati/MT-BERT) воспроизвели модель на основе статьи [ACL 2019 Multi-Task Deep Neural Networks for Natural Language Understanding](https://paperswithcode.com/paper/multi-task-deep-neural-networks-for-natural). Данная модель (MT-DNN) для изучения представлений в различных задачах NLU. MT-DNN расширяет модель, предложенную в статье [Representation learning using multi-task deep neural networks for semantic classification and information retrieval](https://aclanthology.org/N15-1092), путем включения BERT.
 
 Запуск:
 
@@ -64,3 +68,15 @@ learn more complex features.
 |model|cola_mrpc_sst2 accuracy|cola_mrpc_sst2 f1-score|
 |---|---|---|
 |**mutlitask-bert-base-uncased**|82\.75|88\.37|
+
+
+# Выводы
+
+Анализируя качество моделей, обученных с применением multitask learning для задач понимания естественного языка (NLU) и моделей, обученных с применением single task learning, можно сделать следующие выводы:
+
+1. Преимущество multitask learning: Модели, обученные с использованием multitask learning, имеют потенциал для достижения лучшего обобщения и общей производительности. При обучении модели на нескольких задачах одновременно, она может совместно использовать общие знания и структуры, что может привести к улучшению ее способности к пониманию естественного языка.
+2. Улучшение обобщения: Multitask learning может помочь модели лучше обобщать знания, полученные из обучающих данных, на новые примеры или задачи, которые модель не видела во время обучения. Общие признаки и знания, полученные из решения различных задач, могут способствовать более эффективному и точному пониманию новых текстовых данных.
+3. Потенциальные ограничения: Однако в случае multitask learning возможны и некоторые ограничения. Например, сложность и разнообразие задач могут сказаться на производительности модели. Если задачи сильно отличаются друг от друга или имеют разные требования к обучающим данным, это может затруднить обучение модели. Некоторые задачи могут доминировать в обучении, что может привести к ухудшению производительности на других задачах.
+4. Подход single task learning: Модели, обученные с использованием single task learning, могут быть специализированы для конкретных задач и обеспечивать высокое качество в рамках своей узкой области. Они могут быть предпочтительными, если у вас есть одна основная задача, которую нужно решить без сильной связи с другими задачами.
+
+В целом, выбор между multitask learning и single task learning зависит от конкретных требований и контекста вашей задачи. Multitask learning может быть полезным для улучшения обобщения и производительности модели на нескольких задачах NLU, тогда как single task learning может быть предпочтительным, когда требуется специализация на конкретной задаче без учета других.
