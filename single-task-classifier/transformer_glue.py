@@ -152,9 +152,9 @@ def main(cfg: DictConfig):
     if args.use_wandb:
         wandb.log(final_metrics)
         run.finish()
-    else:
-        logging.info("Final metrics:")
-        logging.info(final_metrics)
+    
+    logging.info("Final metrics:")
+    logging.info(final_metrics)
     save_config(OmegaConf.to_container(
         args, resolve=True), args.TRAINING_ARGS.output_dir)
 
