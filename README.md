@@ -1,6 +1,6 @@
 # Multi-vs-single-task-classifiers GLUE - Cola, SST-2, MRPC
 
-Обучить классификатор в режиме Multi-task Learning любым методом на следующих задачах GLUE - Cola, SST-2, MRPC
+Обучить классификатор в режиме Multi-task Learning любым методом на следующих задачах GLUE - Cola, SST-2, MRPC. Cравнить с подходом к обучению на все задачи сразу и с отдельной моделью под каждую из задач.
 
 Проведенные эксперименты можно посмотреть на [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers?workspace=user-gusevski).
 
