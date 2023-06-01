@@ -1,6 +1,5 @@
 task: mrpc #sst2 #cola
 model: "roberta-base"
-epochs: 3
 device: "cuda:0"
 log_file: "results.csv"
 use_wandb: true
