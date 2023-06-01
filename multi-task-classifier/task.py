@@ -2,8 +2,8 @@ from enum import Enum
 import numpy as np
 import torch
 from datasets import load_dataset, ClassLabel
-# from scipy.stats import pearsonr, spearmanr
-from sklearn.metrics import accuracy_score, f1_score
+from scipy.stats import pearsonr, spearmanr
+from sklearn.metrics import accuracy_score, f1_score, matthews_corrcoef
 from torch.utils.data import TensorDataset, Subset
 
 
@@ -41,30 +41,30 @@ class TaskConfig:
 
 def define_dataset_config():
     datasets_config = {
-        Task.CoLA: TaskConfig(("glue", "cola"), ["label", "sentence"], batch_size=32, metrics=[accuracy_score, f1_score]),
+        Task.CoLA: TaskConfig(("glue", "cola"), ["label", "sentence"], batch_size=32, metrics=[accuracy_score, f1_score, matthews_corrcoef]),
         Task.SST_2: TaskConfig(("glue", "sst2"), ["label", "sentence"], batch_size=32, metrics=[accuracy_score, f1_score]),
         Task.MRPC: TaskConfig(("glue", "mrpc"), ["label", "sentence1", "sentence2"], batch_size=32,metrics=[accuracy_score, f1_score]),
-        # Task.STS_B: TaskConfig(("glue", "stsb"), ["label", "sentence1", "sentence2"], batch_size=32,
-        #                        metrics=[pearsonr, spearmanr]),
-        # Task.MNLIm: TaskConfig(("glue", "mnli"), ["label", "hypothesis", "premise"], batch_size=32,
-        #                        metrics=[accuracy_score]),
-        # Task.MNLImm: TaskConfig(("glue", "mnli"), ["label", "hypothesis", "premise"], batch_size=32,
-        #                         metrics=[accuracy_score]),
-        # Task.WNLI: TaskConfig(("glue", "wnli"), ["label", "sentence1", "sentence2"], batch_size=32,
-        #                       metrics=[accuracy_score]),
-        # Task.QQP: TaskConfig(("glue", "qqp"), ["label", "question1", "question2"], batch_size=32,
-        #                      metrics=[accuracy_score, f1_score]),
-        # Task.RTE: TaskConfig(("glue", "rte"), ["label", "sentence1", "sentence2"], batch_size=32,
-        #                      metrics=[accuracy_score]),
+        Task.STS_B: TaskConfig(("glue", "stsb"), ["label", "sentence1", "sentence2"], batch_size=32,
+                               metrics=[pearsonr, spearmanr]),
+        Task.MNLIm: TaskConfig(("glue", "mnli"), ["label", "hypothesis", "premise"], batch_size=32,
+                               metrics=[accuracy_score]),
+        Task.MNLImm: TaskConfig(("glue", "mnli"), ["label", "hypothesis", "premise"], batch_size=32,
+                                metrics=[accuracy_score]),
+        Task.WNLI: TaskConfig(("glue", "wnli"), ["label", "sentence1", "sentence2"], batch_size=32,
+                              metrics=[accuracy_score]),
+        Task.QQP: TaskConfig(("glue", "qqp"), ["label", "question1", "question2"], batch_size=32,
+                             metrics=[accuracy_score, f1_score]),
+        Task.RTE: TaskConfig(("glue", "rte"), ["label", "sentence1", "sentence2"], batch_size=32,
+                             metrics=[accuracy_score]),
 
-        # Task.QNLI: TaskConfig(("glue", "qnli"), ["label", "question", "sentence"], batch_size=32,
-        #                       metrics=[accuracy_score]),
-        # Task.SNLI: TaskConfig(("snli", "plain_text"), ["label", "hypothesis", "premise"], batch_size=32,
-        #                       metrics=[accuracy_score]),
-        # Task.SciTail: TaskConfig(("scitail", "tsv_format"), ["label", "hypothesis", "premise"], batch_size=32,
-        #                          metrics=[accuracy_score]),
-        # Task.AX: TaskConfig(("glue", "ax"), ["label", "hypothesis", "premise"], batch_size=32,
-        #                     metrics=[matthews_corrcoef]),
+        Task.QNLI: TaskConfig(("glue", "qnli"), ["label", "question", "sentence"], batch_size=32,
+                              metrics=[accuracy_score]),
+        Task.SNLI: TaskConfig(("snli", "plain_text"), ["label", "hypothesis", "premise"], batch_size=32,
+                              metrics=[accuracy_score]),
+        Task.SciTail: TaskConfig(("scitail", "tsv_format"), ["label", "hypothesis", "premise"], batch_size=32,
+                                 metrics=[accuracy_score]),
+        Task.AX: TaskConfig(("glue", "ax"), ["label", "hypothesis", "premise"], batch_size=32,
+                            metrics=[matthews_corrcoef]),
     }
     return datasets_config
 
