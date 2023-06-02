@@ -36,12 +36,11 @@ Install `pip install -r requirements.txt -q`
 |**bert-base-uncased**|81\.14|84\.31|92\.31|
 
 **bert-base-uncased** cola accuracy std = 0.004775
+
 **bert-base-uncased** sst2 accuracy std = 0.00341
+
 **bert-base-uncased** mrpc accuracy std = 0.01215
 
-**bert-base-uncased** cola f1 std = 0.00310
-**bert-base-uncased** sst2 f1 std = 0.00302
-**bert-base-uncased** mrpc f1 std = 0.0065
 
 
 # Multi task classifier
@@ -76,9 +75,11 @@ learn more complex features.
 |---|---|---|---|
 |**mutlitask-bert-base-uncased**|82\.93|81\.05|92\.28
 
-accuracy cola std = 0.0044
-accuracy mrpc std = 0.0133
-accuracy sst2 std = 0.0062
+**mutlitask-bert-base-uncased** accuracy cola std = 0.0044
+
+**mutlitask-bert-base-uncased** accuracy mrpc std = 0.0133
+
+**mutlitask-bert-base-uncased** accuracy sst2 std = 0.0062
 
 # Выводы
 
