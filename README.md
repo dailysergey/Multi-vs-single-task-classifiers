@@ -28,19 +28,12 @@ Install `pip install -r requirements.txt -q`
 
 Результаты будут сохраняться в двух папких: wandb и outputs, которые содержат логи w&b и hydra соответственно, а также чекпоинты моделей.
 
-Таблица ниже показывает достигнутую точность, усредненную по трем запускам с разными seed-ами на тестовой выборке в процентах.
+Таблица ниже показывает достигнутую точность, усредненную по трем запускам с разными seed-ами на тестовой выборке.
 
 |model|cola|mrpc|sst2|
 |---|---|---|---|
-|**roberta-base**|82\.74|88\.48|93\.27|
-|**bert-base-uncased**|81\.14|84\.31|92\.31|
-
-**bert-base-uncased** cola accuracy std = 0.004775
-
-**bert-base-uncased** sst2 accuracy std = 0.00341
-
-**bert-base-uncased** mrpc accuracy std = 0.01215
-
+|**roberta-base**|0\.8274 +- 0.004|0\.8848 +- 0.012|0\.9327 +- 0.003|
+|**bert-base-uncased**|0\.8114 +- 0.004|0\.8431 +- 0.012|0\.9231 +- 0.003|
 
 
 # Multi task classifier
@@ -68,18 +61,13 @@ learn more complex features.
 `python mt_transformer_glue.py seed=40 epochs=3`
 
 
-Таблица ниже показывает достгнутое accuracy на тестовой выборке в процентах, усреднённое по трём запускам c разными seed-ами. Метрики удобно смотреть с помощью табличного вида [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers/table?workspace=user-gusevski)
+Таблица ниже показывает достгнутое accuracy на тестовой выборке, усреднённое по трём запускам c разными seed-ами. Метрики удобно смотреть с помощью табличного вида [w&b](https://wandb.ai/gusevski/Multi-vs-single-task-classifiers/table?workspace=user-gusevski)
 
 
 |model|cola|mrpc|sst2|
 |---|---|---|---|
-|**mutlitask-bert-base-uncased**|82\.93|81\.05|92\.28
+|**mutlitask-bert-base-uncased**|0\.8293 +- 0.0044|0\.8105 +- 0.0133|0\.9228 +- 0.0062|
 
-**mutlitask-bert-base-uncased** accuracy cola std = 0.0044
-
-**mutlitask-bert-base-uncased** accuracy mrpc std = 0.0133
-
-**mutlitask-bert-base-uncased** accuracy sst2 std = 0.0062
 
 # Выводы
 
